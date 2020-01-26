@@ -9,7 +9,7 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 import argparse
-from datetime_z import parse_datetime
+from util.datetime_z import parse_datetime
 import datetime
 import time
 
@@ -43,6 +43,7 @@ def make_histogram(filename, output_file):
 		max_score = subs['Total'].max()
 
 		# build date
+
 		first_date = parse_datetime(first_submit_time)
 		last_date = parse_datetime(first_submit_time)
 		# unixtime = time.mktime(date.timetuple())
@@ -52,7 +53,7 @@ def make_histogram(filename, output_file):
 		# build the dataframe iterativelyfirst_date_str
 		score_table.loc[student] = pd.Series({'First Submission':pd.to_datetime(first_date_str), 'First Submission DatetimeObj':first_submit_time, 'Last Submission':pd.to_datetime(last_date_str), 'Final Score':max_score})
 
-	print(score_table)
+	# print(score_table)
 
 
 	sns.set(style="whitegrid")

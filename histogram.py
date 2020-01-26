@@ -27,11 +27,17 @@ def make_histogram(filename, log_plot, output_filename, title):
 
 	ax.set_title(title)
 
-	ax.set_ylabel("# Students")
+	ax.set_title("\n".join(wrap(title, 60)))
+
+	ax.set_ylabel("Number of Students", fontweight="bold")
+	ax.set_xlabel("Final Score", fontweight="bold")
+
 	ax.grid(False)
 	# plt.xlim(0, 40)
 
+	plt.tight_layout()
 	# plt.show()
+
 
 	sns_plot = ax.get_figure()
 	sns_plot.savefig(fname=output_filename)

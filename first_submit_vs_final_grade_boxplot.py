@@ -8,10 +8,13 @@ import csv
 import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import argparse
-from datetime_z import parse_datetime
+from util.datetime_z import parse_datetime
 import datetime
 import time
+from textwrap import wrap
+
 
 
 def make_histogram(filename, output_file, title):
@@ -41,31 +44,39 @@ def make_histogram(filename, output_file, title):
 		first_submit_time = subs['Timestamp'].min()
 		last_submit_time = subs['Timestamp'].max()
 		max_score = subs['Total'].max()
+		# print(type(first_submit_time))
 
 		# build date
 		first_date = parse_datetime(first_submit_time)
 		last_date = parse_datetime(first_submit_time)
 		# unixtime = time.mktime(date.timetuple())
-		first_date_str = str('%04d'%first_date.year) + '-' + str('%02d'%first_date.month) + '-' + str('%02d'%first_date.day) 
+		# first_date_str = str('%04d'%first_date.year) + '-' + str('%02d'%first_date.month) + '-' + str('%02d'%first_date.day) 
+		first_date_str = str('%02d'%first_date.month) + '-' + str('%02d'%first_date.day) 
 		last_date_str = str(last_date.year) + '-' + str(last_date.month) + '-' + str(last_date.day) 
 
-		# build the dataframe iterativelyfirst_date_str
-		score_table.loc[student] = pd.Series({'First Submission':pd.to_datetime(first_date_str), 'First Submission DatetimeObj':first_submit_time, 'Last Submission':pd.to_datetime(last_date_str), 'Final Score':max_score})
+		# build the dataframe iteratively
+		score_table.loc[student] = pd.Series({'First Submission':first_date_str, 'First Submission DatetimeObj':first_submit_time, 'Last Submission':pd.to_datetime(last_date_str), 'Final Score':max_score})
 
-	print(score_table)
+	# print(score_table)
 
 
 	sns.set(style="whitegrid")
 
+	# sorting dataframe
+	score_table.sort_values('First Submission', ascending=True, inplace=True)
+	# print(score_table)
 
 	# sns.regplot(x=score_table['First Submission DatetimeObj'], y=score_table['Final Score']);
 	# ax = sns.scatterplot(x=score_table['First Submission'], y=score_table['Final Score'], color=sns.xkcd_rgb["windows blue"])
 	ax = sns.boxplot(x=score_table['First Submission'], y=score_table['Final Score'])
 	
 
-	ax.set_title(title)
+	# ax.set_title(title)
+	ax.set_title("\n".join(wrap(title, 60)))
 
-	ax.set_ylabel("Final Score")
+	ax.set_ylabel("Final Score", fontweight="bold")
+	ax.set_xlabel("Date of First Submission", fontweight="bold")
+
 	ax.grid(False)
 	# x_dates = score_table['First Submission'].dt.strftime('%Y-%m-%d').sort_values().unique()
 	# ax.set_xticklabels(labels=x_dates, rotation=45, ha='right')
@@ -73,11 +84,15 @@ def make_histogram(filename, output_file, title):
 	# plt.xlim(first_submission, last_submission)
 
 	ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-	# plt.tight_layout()
-	plt.gcf().subplots_adjust(bottom=0.35)
+	# ax.xaxis_date()
+	# ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+	
+	# fix layout
+	plt.tight_layout()
+	# plt.gcf().subplots_adjust(bottom=0.2)
 
 
-	plt.show()
+	# plt.show()
 	sns_plot = ax.get_figure()
 	sns_plot.savefig(fname=output_file)
 
