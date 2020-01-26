@@ -10,7 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import argparse
 import numpy as np
-
+from textwrap import wrap
 
 def make_histogram(filename, log_plot, output_filename, title):
 	df = pd.read_csv(filename)
